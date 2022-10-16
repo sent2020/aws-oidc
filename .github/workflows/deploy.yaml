@@ -1,0 +1,38 @@
+name: Hello from AWSb
+
+on:
+  push:
+  
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  greeting:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: us-east-1
+        role-to-assume: arn:aws:iam::<ACCOUNT ID>>:role/github-actions
+    - name: Print assumed role
+      run: aws sts get-caller-identity
+    - name: s3 list 
+      run: aws s3 ls
+    - name: Assume execution role
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+        aws-region: us-east-1
+        aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ env.AWS_SESSION_TOKEN }}
+        role-duration-seconds: 3000
+        role-skip-session-tagging: true
+        role-to-assume: arn:aws:iam::<ACCOUNT ID>:role/git-cross-role
+    - name: Print assumed role
+      run: aws sts get-caller-identity
+    - name: s3 list 
+      run: aws s3 ls
